@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meltwater APAC Cybersecurity Partner Identifier</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f7f4;
+    --card: #ffffff;
+    --border: rgba(0,0,0,0.1);
+    --border-med: rgba(0,0,0,0.18);
+    --text-primary: #1a1a18;
+    --text-secondary: #5a5a55;
+    --text-muted: #9a9a93;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+    --purple-mid: #AFA9EC;
+    --purple-dark: #26215C;
+    --radius-md: 8px;
+    --radius-lg: 14px;
+    --radius-xl: 20px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16161a;
+      --card: #1e1e24;
+      --border: rgba(255,255,255,0.1);
+      --border-med: rgba(255,255,255,0.18);
+      --text-primary: #e8e8e2;
+      --text-secondary: #9a9a93;
+      --text-muted: #5a5a55;
+      --purple-light: #2a2756;
+      --purple-mid: #534AB7;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--purple-dark);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    gap: 12px;
+  }
+  .topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .topbar-logo svg { flex-shrink: 0; }
+  .topbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .topbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.2); margin: 0 4px; }
+  .topbar-sub { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1.5px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .tab {
+    padding: 10px 22px;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    border: none;
+    background: none;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    transition: color .15s, border-color .15s;
+    font-family: inherit;
+  }
+  .tab:hover { color: var(--purple); }
+  .tab.active { color: var(--purple); border-bottom-color: var(--purple); font-weight: 500; }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── QUIZ ── */
+  .progress-row { display: flex; gap: 5px; margin-bottom: 10px; }
+  .pip { height: 4px; flex: 1; background: var(--border); border-radius: 2px; transition: background .3s; }
+  .pip.done { background: var(--purple); }
+  .pip.active { background: var(--purple-mid); }
+
+  .step-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .question { font-size: 20px; font-weight: 500; color: var(--text-primary); margin-bottom: 1.5rem; line-height: 1.45; }
+
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: border-color .15s, background .15s, transform .1s;
+    background: var(--card);
+  }
+  .opt:hover { border-color: var(--purple-mid); background: var(--purple-light); transform: translateY(-1px); }
+  .opt.selected { border-color: var(--purple); background: var(--purple-light); }
+  .opt-icon { font-size: 22px; color: var(--text-muted); flex-shrink: 0; margin-top: 1px; }
+  .opt.selected .opt-icon { color: var(--purple); }
+  .opt-body { flex: 1; }
+  .opt-title { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .opt-sub { font-size: 12px; color: var(--text-secondary); margin-top: 3px; line-height: 1.4; }
+
+  .nav { display: flex; gap: 10px; margin-top: 1.5rem; align-items: center; }
+  .btn {
+    padding: 9px 22px; border-radius: var(--radius-md); font-size: 14px;
+    cursor: pointer; border: 1px solid var(--border-med);
+    background: var(--card); color: var(--text-primary);
+    font-family: inherit; transition: background .15s, transform .1s;
+  }
+  .btn:hover { background: var(--purple-light); }
+  .btn:active { transform: scale(0.98); }
+  .btn.primary { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .btn.primary:hover { background: #3C3489; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .nav-hint { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+  /* ── RESULT ── */
+  .result-hero {
+    background: linear-gradient(135deg, #2d2a6e 0%, #534AB7 100%);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    color: #fff;
+  }
+  .result-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.2); border-radius: 20px;
+    padding: 4px 14px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: 14px;
+  }
+  .result-name { font-size: 28px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .result-tagline { font-size: 14px; opacity: 0.8; line-height: 1.5; max-width: 520px; }
+
+  .section-title { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+
+  .reasons { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+  .reason {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--purple);
+    border-radius: var(--radius-md);
+    font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .reason-check { color: var(--purple); flex-shrink: 0; margin-top: 1px; font-size: 16px; }
+
+  .also-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .also-card {
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .also-name { font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .also-note { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+  .ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; margin-bottom: 1.5rem; }
+  .ref-link {
+    text-align: center; padding: 8px; font-size: 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    color: var(--purple); text-decoration: none;
+    transition: background .15s;
+  }
+  .ref-link:hover { background: var(--purple-light); }
+
+  .result-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  /* ── CONTACT BLOCK ── */
+  .contact-block { margin-bottom: 1.5rem; }
+  .contact-cards { display: flex; gap: 10px; flex-wrap: wrap; }
+  .contact-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    flex: 1; min-width: 200px;
+    transition: border-color .15s, background .15s, transform .1s;
+  }
+  .contact-card:hover { border-color: #4A9EDB; background: #EBF5FF; transform: translateY(-1px); }
+  .contact-card.group-dm { border-color: var(--purple-mid); }
+  .contact-card.group-dm:hover { border-color: var(--purple); background: var(--purple-light); }
+  .contact-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; flex-shrink: 0; color: #fff;
+  }
+  .contact-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .contact-role { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .contact-slack { font-size: 11px; color: #4A9EDB; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+  @media (prefers-color-scheme: dark) {
+    .contact-card:hover { background: #1a2a38; border-color: #4A9EDB; }
+  }
+
+  /* ── PARTNER OVERVIEW ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
+  .chip {
+    padding: 7px 16px; border-radius: 24px; font-size: 13px; cursor: pointer;
+    border: 1px solid var(--border-med); background: var(--card); color: var(--text-secondary);
+    transition: all .15s; font-family: inherit; font-weight: 500;
+  }
+  .chip:hover { border-color: var(--purple-mid); color: var(--purple); }
+  .chip.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+  .partner-card {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    animation: fadeIn .2s ease;
+  }
+  .partner-card.shown { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .pc-header { padding: 1.5rem 2rem; display: flex; align-items: flex-start; gap: 16px; }
+  .pc-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .pc-name { font-size: 22px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; letter-spacing: -0.02em; }
+  .pc-tagline { font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
+
+  .pc-body { padding: 0 2rem 2rem; }
+  .pc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.25rem; }
+  .pc-tag { font-size: 11px; padding: 4px 12px; border-radius: 20px; font-weight: 500; }
+
+  .pc-section-title { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+
+  .uc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
+  .uc-item {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+  }
+  .uc-title { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+  .uc-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+
+  .pc-signals { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.25rem; }
+  .signal { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+  .signal-icon { flex-shrink: 0; font-size: 16px; }
+
+  .pc-footer { padding: 1rem 2rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: gap; }
+  .pc-url { font-size: 13px; color: var(--purple); text-decoration: none; }
+  .pc-url:hover { text-decoration: underline; }
+
+  /* ── PRODUCT CARDS (Blackbird Compass / RAV3N) ── */
+  .product-cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 1.25rem; }
+  .product-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--card);
+  }
+  .product-card-header { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--border); }
+  .product-card-name { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+  .product-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+  .product-card-body { padding: 12px 16px; }
+  .product-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+  .pricing-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+  .pricing-table tr { border-bottom: 1px solid var(--border); }
+  .pricing-table tr:last-child { border-bottom: none; }
+  .pricing-table td { padding: 6px 4px; font-size: 12px; vertical-align: top; }
+  .pricing-table td:first-child { color: var(--text-muted); width: 44%; }
+  .pricing-table td:last-child { color: var(--text-primary); font-weight: 500; }
+  .pricing-table .margin-row td:last-child { color: #1D9E75; }
+  .product-note { font-size: 11px; color: var(--text-muted); line-height: 1.5; padding: 8px 10px; background: var(--bg); border-radius: var(--radius-md); margin-bottom: 10px; }
+  .product-slide-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; color: #1D9E75; text-decoration: none;
+    padding: 6px 12px; border: 1px solid #9FE1CB;
+    border-radius: var(--radius-md); transition: background .15s;
+  }
+  .product-slide-link:hover { background: #E1F5EE; }
+
+  .collateral-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 16px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 500; text-decoration: none;
+    background: var(--purple-light); color: var(--purple);
+    border: 1px solid var(--purple-mid);
+    transition: background .15s, transform .1s;
+  }
+  .collateral-link:hover { background: #CECBF6; transform: translateY(-1px); }
+  .flowchart-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 1.5rem; }
+  .flowchart-wrap svg { display: block; margin: 0 auto; }
+
+  /* ── FOOTER ── */
+  .page-footer { text-align: center; margin-top: 3rem; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── ICONS (inline SVG approach for portability) ── */
+  .icon { display: inline-block; vertical-align: middle; width: 20px; height: 20px; }
+
+  @media (max-width: 540px) {
+    .main { padding: 1.5rem 1rem 3rem; }
+    .result-name { font-size: 22px; }
+    .pc-header { padding: 1.25rem; }
+    .pc-body { padding: 0 1.25rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <img src="data:image/png;base64,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" alt="Meltwater" style="height:32px;width:auto;display:block;">
+    <div class="topbar-sep"></div>
+    <span class="topbar-sub">APAC Cybersecurity Partner Identifier — Internal Sales Tool</span>
+  </div>
+</div>
+
+<div class="main">
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('quiz')">🎯 Partner Questionnaire</button>
+    <button class="tab" onclick="switchTab('overview')">📋 Partner Overview</button>
+    <button class="tab" onclick="switchTab('flowchart')">🗺️ Decision Flowchart</button>
+  </div>
+
+  <!-- ═══ QUIZ TAB ═══ -->
+  <div id="view-quiz" class="view active">
+    <div id="quiz-screen">
+      <div class="progress-row" id="progress"></div>
+      <div class="step-label" id="step-label"></div>
+      <div class="question" id="question-text"></div>
+      <div class="opts" id="opts-list"></div>
+      <div class="nav">
+        <button class="btn" id="btn-back" onclick="goBack()">← Back</button>
+        <button class="btn primary" id="btn-next" onclick="goNext()" disabled>Next →</button>
+        <span class="nav-hint" id="nav-hint">Select an option to continue</span>
+      </div>
+    </div>
+    <div id="result-screen" style="display:none"></div>
+  </div>
+
+  <!-- ═══ OVERVIEW TAB ═══ -->
+  <div id="view-overview" class="view">
+    <div class="chips" id="chips"></div>
+    <div id="partner-cards"></div>
+  </div>
+
+  <!-- ═══ FLOWCHART TAB ═══ -->
+  <div id="view-flowchart" class="view">
+    <div class="flowchart-wrap">
+      <svg width="100%" viewBox="0 0 720 980" xmlns="http://www.w3.org/2000/svg" role="img">
+        <title>Cyber Partner Decision Flowchart</title>
+        <desc>A decision flowchart to help Meltwater sales teams identify the right cyber partner based on client need</desc>
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- START -->
+        <rect x="260" y="20" width="200" height="44" rx="22" fill="#534AB7" stroke="#3C3489" stroke-width="1"/>
+        <text x="360" y="47" text-anchor="middle" fill="#fff" font-family="-apple-system, sans-serif" font-size="14" font-weight="600">Client needs cyber intelligence?</text>
+
+        <!-- Arrow down -->
+        <line x1="360" y1="64" x2="360" y2="104" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Q1: Sector -->
+        <rect x="220" y="104" width="280" height="52" rx="10" fill="#EEEDFE" stroke="#AFA9EC" stroke-width="1"/>
+        <text x="360" y="124" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Q1: What sector is the client?</text>
+        <text x="360" y="143" text-anchor="middle" fill="#534AB7" font-family="-apple-system, sans-serif" font-size="11">Government / Public  ·  Corporate  ·  Mixed</text>
+
+        <!-- Branches from Q1 -->
+        <!-- LEFT: Government -->
+        <line x1="220" y1="130" x2="130" y2="130" stroke="#888" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="130" y1="130" x2="130" y2="210" stroke="#888" stroke-width="1" marker-end="url(#arr2)"/>
+        <text x="122" y="172" text-anchor="middle" fill="#888" font-family="-apple-system, sans-serif" font-size="11" transform="rotate(-90, 122, 172)">Government</text>
+
+        <!-- RIGHT: Corporate -->
+        <line x1="500" y1="130" x2="590" y2="130" stroke="#888" stroke-width="1" stroke-dasharray="4 3"/>
+        <line x1="590" y1="130" x2="590" y2="210" stroke="#888" stroke-width="1" marker-end="url(#arr2)"/>
+        <text x="598" y="172" text-anchor="middle" fill="#888" font-family="-apple-system, sans-serif" font-size="11" transform="rotate(90, 598, 172)">Corporate</text>
+
+        <!-- CENTER: down -->
+        <line x1="360" y1="156" x2="360" y2="210" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="375" y="188" fill="#534AB7" font-family="-apple-system, sans-serif" font-size="11">Mixed</text>
+
+        <!-- Q2: Threat Type -->
+        <rect x="220" y="210" width="280" height="52" rx="10" fill="#EEEDFE" stroke="#AFA9EC" stroke-width="1"/>
+        <text x="360" y="230" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="13" font-weight="600">Q2: Primary threat concern?</text>
+        <text x="360" y="249" text-anchor="middle" fill="#534AB7" font-family="-apple-system, sans-serif" font-size="10">Social / Cyber-tech / Narrative / OSINT / Unknown</text>
+
+        <!-- Government path box (left) -->
+        <rect x="20" y="210" width="180" height="52" rx="10" fill="#fff" stroke="#D4C5F5" stroke-width="1"/>
+        <text x="110" y="230" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Gov / Defence / Intel</text>
+        <text x="110" y="247" text-anchor="middle" fill="#5a5a55" font-family="-apple-system, sans-serif" font-size="11">→ OSINT depth needed?</text>
+
+        <!-- Corporate path box (right) -->
+        <rect x="520" y="210" width="180" height="52" rx="10" fill="#fff" stroke="#D4C5F5" stroke-width="1"/>
+        <text x="610" y="230" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Corporate / Brand</text>
+        <text x="610" y="247" text-anchor="middle" fill="#5a5a55" font-family="-apple-system, sans-serif" font-size="11">→ IT security or brand risk?</text>
+
+        <!-- Arrow down from Q2 -->
+        <line x1="360" y1="262" x2="360" y2="320" stroke="#534AB7" stroke-width="1.5" marker-end="url(#arr)"/>
+
+        <!-- Divider label -->
+        <line x1="40" y1="310" x2="680" y2="310" stroke="#e0ddf5" stroke-width="1" stroke-dasharray="6 4"/>
+        <text x="360" y="318" text-anchor="middle" fill="#AFA9EC" font-family="-apple-system, sans-serif" font-size="10">Partner recommendation zone</text>
+
+        <!-- ── PARTNER BOXES ── Row 1 -->
+        <!-- Cyabra -->
+        <rect x="20" y="330" width="200" height="130" rx="12" fill="#FFF7F0" stroke="#E8872A" stroke-width="1.5"/>
+        <rect x="20" y="330" width="200" height="32" rx="12" fill="#E8872A"/>
+        <rect x="20" y="348" width="200" height="14" fill="#E8872A"/>
+        <text x="120" y="351" text-anchor="middle" fill="#fff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">Cyabra</text>
+        <text x="120" y="378" text-anchor="middle" fill="#8B4A10" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Social Threat Intel</text>
+        <text x="120" y="396" text-anchor="middle" fill="#6b4020" font-family="-apple-system, sans-serif" font-size="10">Fake accounts &amp; bots</text>
+        <text x="120" y="411" text-anchor="middle" fill="#6b4020" font-family="-apple-system, sans-serif" font-size="10">Disinformation campaigns</text>
+        <text x="120" y="426" text-anchor="middle" fill="#6b4020" font-family="-apple-system, sans-serif" font-size="10">Brand protection</text>
+        <text x="120" y="441" text-anchor="middle" fill="#6b4020" font-family="-apple-system, sans-serif" font-size="10">Crisis management</text>
+        <text x="120" y="456" text-anchor="middle" fill="#E8872A" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">Best add-on to Meltwater</text>
+
+        <!-- Blackbird -->
+        <rect x="260" y="330" width="200" height="140" rx="12" fill="#F0FBF7" stroke="#1D9E75" stroke-width="1.5"/>
+        <rect x="260" y="330" width="200" height="32" rx="12" fill="#1D9E75"/>
+        <rect x="260" y="348" width="200" height="14" fill="#1D9E75"/>
+        <text x="360" y="351" text-anchor="middle" fill="#fff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">Blackbird.AI</text>
+        <text x="360" y="378" text-anchor="middle" fill="#0a5a40" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">Narrative Intelligence</text>
+        <text x="360" y="396" text-anchor="middle" fill="#095030" font-family="-apple-system, sans-serif" font-size="10">Narrative risk scoring</text>
+        <text x="360" y="411" text-anchor="middle" fill="#095030" font-family="-apple-system, sans-serif" font-size="10">Information operations</text>
+        <text x="360" y="426" text-anchor="middle" fill="#095030" font-family="-apple-system, sans-serif" font-size="10">Market manipulation</text>
+        <text x="360" y="441" text-anchor="middle" fill="#095030" font-family="-apple-system, sans-serif" font-size="10">Executive protection</text>
+        <text x="360" y="456" text-anchor="middle" fill="#1D9E75" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">✦ Compass live in Meltwater</text>
+        <text x="360" y="468" text-anchor="middle" fill="#1D9E75" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">+ RAV3N Recon Reports</text>
+
+        <!-- CYFIRMA -->
+        <rect x="500" y="330" width="200" height="130" rx="12" fill="#F5F4FF" stroke="#534AB7" stroke-width="1.5"/>
+        <rect x="500" y="330" width="200" height="32" rx="12" fill="#534AB7"/>
+        <rect x="500" y="348" width="200" height="14" fill="#534AB7"/>
+        <text x="600" y="351" text-anchor="middle" fill="#fff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">CYFIRMA</text>
+        <text x="600" y="378" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">External Threat Landscape</text>
+        <text x="600" y="396" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="10">Dark web monitoring</text>
+        <text x="600" y="411" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="10">Attack surface discovery</text>
+        <text x="600" y="426" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="10">Vulnerability intelligence</text>
+        <text x="600" y="441" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="10">Credential exposure</text>
+        <text x="600" y="456" text-anchor="middle" fill="#534AB7" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">For IT/Security teams (CISO)</text>
+
+        <!-- ── PARTNER BOXES ── Row 2 -->
+        <!-- Cognyte -->
+        <rect x="130" y="510" width="210" height="130" rx="12" fill="#EBF4FF" stroke="#185FA5" stroke-width="1.5"/>
+        <rect x="130" y="510" width="210" height="32" rx="12" fill="#185FA5"/>
+        <rect x="130" y="528" width="210" height="14" fill="#185FA5"/>
+        <text x="235" y="531" text-anchor="middle" fill="#fff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">Cognyte</text>
+        <text x="235" y="558" text-anchor="middle" fill="#0c3a6e" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">All-in-One Threat Intel</text>
+        <text x="235" y="576" text-anchor="middle" fill="#0c3a6e" font-family="-apple-system, sans-serif" font-size="10">EASM + DRP + Credentials</text>
+        <text x="235" y="591" text-anchor="middle" fill="#0c3a6e" font-family="-apple-system, sans-serif" font-size="10">Human analyst concierge</text>
+        <text x="235" y="606" text-anchor="middle" fill="#0c3a6e" font-family="-apple-system, sans-serif" font-size="10">SIEM/SOAR integration</text>
+        <text x="235" y="621" text-anchor="middle" fill="#0c3a6e" font-family="-apple-system, sans-serif" font-size="10">5-min deployment</text>
+        <text x="235" y="636" text-anchor="middle" fill="#185FA5" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">Best for enterprise / MSSP</text>
+
+        <!-- Cyberglobes -->
+        <rect x="380" y="510" width="210" height="130" rx="12" fill="#FFF0EB" stroke="#D85A30" stroke-width="1.5"/>
+        <rect x="380" y="510" width="210" height="32" rx="12" fill="#D85A30"/>
+        <rect x="380" y="528" width="210" height="14" fill="#D85A30"/>
+        <text x="485" y="531" text-anchor="middle" fill="#fff" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">Cyberglobes</text>
+        <text x="485" y="558" text-anchor="middle" fill="#7a2810" font-family="-apple-system, sans-serif" font-size="11" font-weight="600">OSINT Specialist</text>
+        <text x="485" y="576" text-anchor="middle" fill="#7a2810" font-family="-apple-system, sans-serif" font-size="10">Deep OSINT intelligence</text>
+        <text x="485" y="591" text-anchor="middle" fill="#7a2810" font-family="-apple-system, sans-serif" font-size="10">Geolocation &amp; actor mapping</text>
+        <text x="485" y="606" text-anchor="middle" fill="#7a2810" font-family="-apple-system, sans-serif" font-size="10">National security use cases</text>
+        <text x="485" y="621" text-anchor="middle" fill="#7a2810" font-family="-apple-system, sans-serif" font-size="10">Govt/defence agencies</text>
+        <text x="485" y="636" text-anchor="middle" fill="#D85A30" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">Often paired with Cyabra</text>
+
+        <!-- ── CONNECTOR LINES ── -->
+        <!-- Q2 → Cyabra -->
+        <line x1="280" y1="286" x2="120" y2="330" stroke="#E8872A" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+        <text x="168" y="300" text-anchor="middle" fill="#E8872A" font-family="-apple-system, sans-serif" font-size="10">Social / Brand</text>
+
+        <!-- Q2 → Blackbird -->
+        <line x1="360" y1="262" x2="360" y2="330" stroke="#1D9E75" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+        <text x="380" y="302" fill="#1D9E75" font-family="-apple-system, sans-serif" font-size="10">Narrative</text>
+
+        <!-- Q2 → CYFIRMA -->
+        <line x1="440" y1="286" x2="600" y2="330" stroke="#534AB7" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+        <text x="548" y="300" text-anchor="middle" fill="#534AB7" font-family="-apple-system, sans-serif" font-size="10">Cyber / IT</text>
+
+        <!-- CYFIRMA → Cognyte (alternative/complement) -->
+        <line x1="600" y1="460" x2="380" y2="510" stroke="#185FA5" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+        <text x="510" y="491" text-anchor="middle" fill="#185FA5" font-family="-apple-system, sans-serif" font-size="10">Enterprise / MSSP</text>
+
+        <!-- Gov box → Cyberglobes -->
+        <line x1="110" y1="262" x2="485" y2="510" stroke="#D85A30" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+        <text x="280" y="400" fill="#D85A30" font-family="-apple-system, sans-serif" font-size="10">OSINT / Govt</text>
+
+        <!-- Cyabra + CG combo note -->
+        <line x1="220" y1="460" x2="380" y2="510" stroke="#888" stroke-width="0.8" stroke-dasharray="3 3"/>
+        <text x="292" y="492" text-anchor="middle" fill="#888" font-family="-apple-system, sans-serif" font-size="10">Can combine</text>
+
+        <!-- ── TRIGGER SIGNALS ── -->
+        <rect x="20" y="680" width="680" height="260" rx="14" fill="#FAFAFA" stroke="#e0ddf5" stroke-width="1"/>
+        <text x="360" y="704" text-anchor="middle" fill="#26215C" font-family="-apple-system, sans-serif" font-size="13" font-weight="700">🔥 Key Trigger Signals — When to Bring Each Partner</text>
+
+        <text x="50" y="730" fill="#E8872A" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">Cyabra</text>
+        <text x="50" y="746" fill="#5a5a55" font-family="-apple-system, sans-serif" font-size="11">→ Brand attack, fake viral content, sentiment drops, bot noise spikes</text>
+
+        <text x="50" y="768" fill="#1D9E75" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">Blackbird.AI</text>
+        <text x="50" y="784" fill="#5a5a55" font-family="-apple-system, sans-serif" font-size="11">→ Coordinated narrative campaigns, market manipulation, comms/PR teams need crisis intel</text>
+
+        <text x="50" y="806" fill="#534AB7" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">CYFIRMA</text>
+        <text x="50" y="822" fill="#5a5a55" font-family="-apple-system, sans-serif" font-size="11">→ CISO asks about dark web exposure, phishing, supply chain or vulnerability risk</text>
+
+        <text x="50" y="844" fill="#185FA5" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">Cognyte</text>
+        <text x="50" y="860" fill="#5a5a55" font-family="-apple-system, sans-serif" font-size="11">→ Enterprise/MSSP needing comprehensive platform + human analyst + SIEM integration</text>
+
+        <text x="50" y="882" fill="#D85A30" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">Cyberglobes</text>
+        <text x="50" y="898" fill="#5a5a55" font-family="-apple-system, sans-serif" font-size="11">→ Government/intelligence agency, national security mandate, deep OSINT/geolocation required</text>
+
+        <text x="50" y="922" fill="#888" font-family="-apple-system, sans-serif" font-size="11" font-style="italic">💡 Combinations: Cyabra + Cyberglobes (gov national security) · Blackbird.AI + Cyabra (enterprise narrative + authenticity) · CYFIRMA + Cognyte (CISO full stack)</text>
+        <text x="50" y="938" fill="#AFA9EC" font-family="-apple-system, sans-serif" font-size="10">For internal Meltwater use only · Not for distribution to clients</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <p>Meltwater APAC Cybersecurity Partner Identifier · Internal Sales Tool · For Meltwater use only</p>
+    <p style="margin-top:4px">Generated May 2026 · Based on partner collateral from Cyabra, Blackbird.AI, CYFIRMA, Cognyte and Cyberglobes</p>
+  </div>
+</div>
+
+<script>
+const PARTNERS = {
+  cyabra: {
+    name: "Cyabra", color: "#E8872A",
+    logo: "https://photos.wellfound.com/startups/i/4313530-75fcd2326cf360f0a820253d03384657-medium_jpg.jpg?buster=1602605513",
+    tagline: "Social threat intelligence — detect mis/disinformation & fake activity across social platforms",
+    tags: [
+      {label:"Social media", bg:"#FFF0E0", color:"#8B4A10"},
+      {label:"Disinformation", bg:"#FFEBE0", color:"#7a2810"},
+      {label:"Bot detection", bg:"#FFF5ED", color:"#994020"},
+      {label:"Brand protection", bg:"#FFEDE0", color:"#7B3810"},
+      {label:"Crisis management", bg:"#FFF2E8", color:"#8a3a10"}
+    ],
+    usecases: [
+      {title:"Fake account & bot detection", desc:"Identifies inauthentic profiles and coordinated bot networks across social platforms"},
+      {title:"Disinformation tracking", desc:"Maps the origin and spread of fake campaigns across X, TikTok, Facebook, Instagram, LinkedIn"},
+      {title:"Brand protection", desc:"Detects fake accounts, impersonations, and synthetic narratives targeting your brand"},
+      {title:"Crisis management", desc:"Real-time monitoring with alerts — distinguish genuine noise from coordinated attacks"},
+      {title:"Deepfake detection", desc:"Identifies synthetic media and impersonation campaigns"},
+      {title:"Consumer insights", desc:"Authenticates consumer conversations — separates real voices from manufactured sentiment"},
+    ],
+    signals: ["🔥 Client reacting to brand attacks or sudden viral negative content","🏛️ Government/public sector with election integrity or national security mandate","📊 Unexplained social volume spikes — Cyabra reveals if coordinated or genuine","🎯 Suspected fake reviews, influencer manipulation, or disinformation campaign"],
+    url: "https://cyabra.com/",
+    collateral: { label: "Cyabra partner deck ↗", url: "https://docs.google.com/presentation/d/1ig3K7JHfeKsTim83GjWylcqB78WQ5mS48zpXJtKFR-Y/edit?usp=sharing" },
+    contacts: ["dean"],
+    mw_fit: "Best add-on to existing Meltwater — sold on Meltwater paper, minimal procurement friction. Start with a one-off brand scan report to create urgency."
+  },
+  blackbird: {
+    name: "Blackbird.AI", color: "#1D9E75",
+    logo: "data:image/png;base64,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",
+    tagline: "Narrative intelligence — understand, detect and act on harmful narratives before they cause damage",
+    tags: [
+      {label:"Narrative risk", bg:"#E5F9F1", color:"#0a5a40"},
+      {label:"Information ops", bg:"#E0F5EC", color:"#085040"},
+      {label:"Enterprise", bg:"#ECF8F3", color:"#0F6E50"},
+      {label:"Defence & Govt", bg:"#E3F7EE", color:"#0b5a44"},
+      {label:"Gartner Leader", bg:"#D9F5EA", color:"#085038"}
+    ],
+    usecases: [
+      {title:"Narrative risk scoring", desc:"Generates risk scores that prioritise threats by context — not just volume. Built for comms, PR and security teams"},
+      {title:"Information operations monitoring", desc:"Detects foreign influence campaigns, state-sponsored disinformation, coordinated narrative manipulation"},
+      {title:"Market manipulation detection", desc:"Protects listed companies, exchanges and financial institutions from narrative-driven market attacks"},
+      {title:"Executive & VIP protection", desc:"Detects threats targeting leadership and key individuals"},
+      {title:"Crisis & event monitoring", desc:"Real-time narrative tracking during elections, disasters, military operations and public health emergencies"},
+      {title:"Influencer & affiliate risk", desc:"Assess partners for hidden reputational and narrative risk before activating campaigns"},
+    ],
+    products: [
+      {
+        name: "Compass — integrated in Meltwater",
+        badge: "✦ Live in Meltwater",
+        badgeBg: "#E0F5EC", badgeColor: "#085040",
+        desc: "Real-time claim verification built directly into Meltwater Explore. Verifies content against thousands of trusted sources and surfaces a Safe / Caution / Warning confidence score — without leaving Meltwater.",
+        pricing: [
+          {label:"List price", value:"$5,000 USD"},
+          {label:"Q2 promo price", value:"$4,000 USD (20% off)"},
+          {label:"COGS", value:"$2,000 (Q2) / $2,500 (list)"},
+          {label:"Meltwater margin", value:"$2,000 (Q2) / $2,500 (list)"},
+          {label:"Commission credit", value:"Based on Meltwater margin, not COGS"},
+        ],
+        note: "PLI live — Product Name: Blackbird Compass Context. For Q2 incentive pricing, contact Mark Arduino for SOPS approval.",
+        slideUrl: "https://docs.google.com/presentation/d/12_FwWBYmEgY18HQ5FF0Uz5xf_Lxw87MkNstZCEHZ3LE/edit?slide=id.g3a22408eaab_0_0#slide=id.g3a22408eaab_0_0",
+        slideLabel: "View Compass client slide ↗"
+      },
+      {
+        name: "RAV3N Recon Reports",
+        badge: "Standalone · Not integrated",
+        badgeBg: "#FFF0E0", badgeColor: "#8B4A10",
+        desc: "Influencer, affiliate and threat actor risk assessments. Cross-platform analysis (social, news, dark web) with heat-scored narrative threat matrix, PDF briefings and interactive dashboards. Scans up to 2 years of content in minutes.",
+        pricing: [
+          {label:"Q2 price", value:"$4,500 USD"},
+          {label:"COGS", value:"$2,250"},
+          {label:"Meltwater margin", value:"$2,250"},
+          {label:"Includes", value:"Self-service login + 15 annual reports (30/60/90 day analysis)"},
+          {label:"Additional reports", value:"$300 each ($150 COGS / $150 margin)"},
+          {label:"PLI type", value:"Partner Technology Passthrough NET"},
+        ],
+        note: "50 free demo reports available for pipeline opportunities. Contact Mark Arduino for special terms.",
+        slideUrl: "https://docs.google.com/presentation/d/12_FwWBYmEgY18HQ5FF0Uz5xf_Lxw87MkNstZCEHZ3LE/edit?slide=id.g3d5d586ed9f_1_1527#slide=id.g3d5d586ed9f_1_1527",
+        slideLabel: "View RAV3N Recon client slide ↗"
+      }
+    ],
+    signals: ["📣 Comms/PR team needs to understand if a crisis is real or coordinated","📈 Suspicion of market manipulation or investor narrative attacks","🌐 Geopolitical narrative risk around territorial disputes or diplomatic events","🔍 Need to understand WHO is driving a narrative and their TTPs"],
+    url: "https://blackbird.ai/",
+    collateral: { label: "Blackbird.AI partner deck ↗", url: "https://docs.google.com/presentation/d/12_FwWBYmEgY18HQ5FF0Uz5xf_Lxw87MkNstZCEHZ3LE/edit?usp=sharing" },
+    contacts: ["dean"],
+    mw_fit: "Strong fit with Meltwater for enterprise narrative intelligence. Gartner-recognised as category leader — differentiating in competitive deals. Compass is live in Meltwater today — easy add-on sell. RAV3N Recon is a standalone quick-win for brand/influencer risk."
+  },
+  cyfirma: {
+    name: "CYFIRMA", color: "#534AB7",
+    logo: "https://media.licdn.com/dms/image/v2/C560BAQFlhWaWoMHPlA/company-logo_200_200/company-logo_200_200/0/1648227851581/cyfirma_logo?e=1779926400&v=beta&t=BIdHo7slCiymttj80Fmbp9gphNKJ8YMQuucDo8dQMaI",
+    tagline: "External threat landscape management — the hacker's view of your digital exposure",
+    tags: [
+      {label:"Cyber threat intel", bg:"#EEEDFE", color:"#26215C"},
+      {label:"Dark web monitoring", bg:"#E8E6FC", color:"#2a2660"},
+      {label:"Attack surface", bg:"#EDEAFC", color:"#29205A"},
+      {label:"Vulnerability intel", bg:"#E6E4FA", color:"#261e5a"},
+      {label:"Digital risk", bg:"#EEECFC", color:"#282060"}
+    ],
+    usecases: [
+      {title:"Dark web monitoring", desc:"Real-time visibility into dark web forums, hacker chatter, credential dumps targeting your org"},
+      {title:"Attack surface discovery", desc:"Maps externally accessible assets, configuration weaknesses, vulnerable ports and cloud instances"},
+      {title:"Vulnerability intelligence", desc:"Early warning on CVEs being actively exploited against your industry, geography or tech stack"},
+      {title:"Brand & digital risk", desc:"Domain impersonation, executive monitoring, social sentiment, credential exposure alerts"},
+      {title:"Supply chain risk", desc:"Monitors weaknesses in supplier/partner digital assets that could impact your organisation"},
+      {title:"Ransomware early warning", desc:"Identifies threat actors targeting your company — intentions, motives, and planned attack methods"},
+    ],
+    signals: ["🔐 CISO or security team asking about external cyber exposure","🕸️ Client concerned about dark web mentions, data leaks or credential theft","🧩 Supply chain or third-party risk discussion","📋 Regulatory compliance or audit-driven security requirement"],
+    url: "https://www.cyfirma.com/",
+    collateral: { label: "CYFIRMA partner deck ↗", url: "https://drive.google.com/file/d/11YWn-6VcJqOsFl6pOcAyRI5XHXg0czJl/view?usp=sharing" },
+    contacts: ["dean"],
+    mw_fit: "Referral and joint delivery model. Meltwater adds media/social context to CYFIRMA's technical threat intelligence. Strong in APAC — Singapore HQ, Goldman Sachs-backed."
+  },
+  cognyte: {
+    name: "Cognyte", color: "#185FA5",
+    logo: "data:image/png;base64,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",
+    tagline: "AI-powered end-to-end external threat intelligence with a human analyst concierge layer",
+    tags: [
+      {label:"All-in-one platform", bg:"#E5EFF9", color:"#0c3a6e"},
+      {label:"Human concierge", bg:"#E0EBF8", color:"#0b3464"},
+      {label:"EASM", bg:"#E8F2FC", color:"#0d3c70"},
+      {label:"DRP", bg:"#E3EEF9", color:"#0c3868"},
+      {label:"SIEM/SOAR", bg:"#E6F0FA", color:"#0d3a6c"}
+    ],
+    usecases: [
+      {title:"Attack surface management", desc:"External asset discovery, inventory, and vulnerability prioritisation across your digital perimeter"},
+      {title:"Threat actor analysis", desc:"Deep profiling of TTPs, IOCs, and priority intelligence requirements with built-in risk scoring"},
+      {title:"Compromised credentials", desc:"Monitors dark and deep web for stolen credentials, account takeover risk, and fraud signals"},
+      {title:"Phishing intelligence", desc:"Proactive detection of phishing infrastructure targeting your brand and customers"},
+      {title:"Intelligence concierge", desc:"A designated human analyst who shapes your security strategy — not just answers alerts"},
+      {title:"SIEM/SOAR integration", desc:"Seamless integration into existing security workflows — 5-minute deployment, 95%+ takedown success"},
+    ],
+    signals: ["🏢 Large enterprise or MSSP needing comprehensive external threat coverage","🧑‍💻 Security team wants a designated analyst, not just a tool","🔗 Requirement to integrate with SIEM, SOAR or TIP platforms","📊 Need for automated dashboards, reports and risk-scored alerts"],
+    url: "https://www.cognyte.com/",
+    collateral: { label: "Cognyte partner deck ↗", url: "https://drive.google.com/file/d/1oVYS38vB2okAPIfkannU-ohUF2d7s3Xw/view?usp=sharing" },
+    contacts: ["dean"],
+    mw_fit: "Strong standalone strategic play. LUMINAR's comprehensive platform approach suits CISOs with a full security mandate. Often positioned as the 'command centre' for external threat intelligence."
+  },
+  cyberglobes: {
+    name: "Cyberglobes", color: "#D85A30",
+    logo: "https://static.wixstatic.com/media/088502_48e03c03f7e245fcbaf26a069ea417ad~mv2.png/v1/fit/w_2500,h_1330,al_c/088502_48e03c03f7e245fcbaf26a069ea417ad~mv2.png",
+    tagline: "Open source intelligence (OSINT) solutions — deep intelligence for national security & government",
+    tags: [
+      {label:"OSINT", bg:"#FFF0EB", color:"#7a2810"},
+      {label:"Geolocation", bg:"#FFE8E0", color:"#712410"},
+      {label:"National security", bg:"#FFEDE5", color:"#762a10"},
+      {label:"Intelligence ops", bg:"#FFEAE0", color:"#782810"},
+      {label:"Govt & Defence", bg:"#FFE5DC", color:"#702210"}
+    ],
+    usecases: [
+      {title:"Deep OSINT intelligence", desc:"Open source intelligence gathering from the full web — surface, deep and dark — for intelligence agencies"},
+      {title:"Geolocation analysis", desc:"Geolocation of social media posts, images and events to support intelligence operations"},
+      {title:"Actor & community mapping", desc:"Maps individuals, groups and networks — identifies relationships, behavioural patterns, influence structures"},
+      {title:"National security OSINT", desc:"Proven in national security wins — including Japan Defence Intelligence HQ (DIH) engagement"},
+      {title:"Extremism & radicalism monitoring", desc:"Tracks extremist communities, propaganda proliferation, and radicalisation indicators"},
+      {title:"Combined with Cyabra", desc:"Often deployed alongside Cyabra for comprehensive social + OSINT national security coverage"},
+    ],
+    signals: ["🏛️ Government, intelligence agency, or defence organisation","🌍 National security, foreign intelligence, or counter-terrorism mandate","📍 Geolocation and physical-world intelligence needed from open sources","🔗 Need to combine OSINT depth with social threat intelligence (Cyabra combo)"],
+    url: "https://www.cyberglobes.com/",
+    contacts: ["dean"],
+    mw_fit: "Specialised for government and defence. Typically brought in as part of a combined solution (Cyabra + Cyberglobes) for comprehensive national security intelligence coverage."
+  }
+};
+
+const CONTACTS = {
+  mark: {
+    name: "Mark Arduino",
+    role: "Partner Manager",
+    initials: "MA",
+    color: "#534AB7",
+    slack: "https://meltwater.slack.com/team/UHUV15MG8",
+    slackId: "UHUV15MG8"
+  },
+  dean: {
+    name: "Dean Lanauze",
+    role: "Partner Manager",
+    initials: "DL",
+    color: "#1D9E75",
+    slack: "https://meltwater.slack.com/team/U08DD0Q1NMC",
+    slackId: "U08DD0Q1NMC"
+  }
+};
+
+function buildContactHTML(contacts, compact=false) {
+  if (contacts.length > 1) {
+    const ids = contacts.map(cid => CONTACTS[cid].slackId).join(',');
+    const groupLink = `slack://users?ids=${ids}`;
+    const avatarSize = compact ? '32px' : '40px';
+    const fontSize = compact ? '12px' : '13px';
+    return `<a class="contact-card group-dm" href="${groupLink}">
+      <div style="display:flex;gap:-6px;position:relative;width:${compact?'52px':'60px'};flex-shrink:0">
+        ${contacts.map((cid,i) => `<div class="contact-avatar" style="background:${CONTACTS[cid].color};width:${avatarSize};height:${avatarSize};font-size:${fontSize};position:${i>0?'absolute':'relative'};${i>0?`left:${compact?'18px':'22px'};`:''}border:2px solid var(--card)">${CONTACTS[cid].initials}</div>`).join('')}
+      </div>
+      <div>
+        <div class="contact-name" style="font-size:${compact?'13px':'14px'}">${contacts.map(cid=>CONTACTS[cid].name.split(' ')[0]).join(' & ')}</div>
+        <div class="contact-role" style="font-size:11px">Partner Managers</div>
+        <div class="contact-slack">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.14 13.5 19.79 19.79 0 0 1 1.08 4.86 2 2 0 0 1 3.05 2.68h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 17z"/></svg>
+          Open group DM in Slack ↗
+        </div>
+      </div>
+    </a>`;
+  } else {
+    const c = CONTACTS[contacts[0]];
+    const avatarSize = compact ? '34px' : '40px';
+    return `<a class="contact-card" href="${c.slack}" target="_blank">
+      <div class="contact-avatar" style="background:${c.color};width:${avatarSize};height:${avatarSize};font-size:${compact?'13px':'15px'}">${c.initials}</div>
+      <div>
+        <div class="contact-name" style="font-size:${compact?'13px':'14px'}">${c.name}</div>
+        <div class="contact-role">${c.role}</div>
+        <div class="contact-slack">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.14 13.5 19.79 19.79 0 0 1 1.08 4.86 2 2 0 0 1 3.05 2.68h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 17z"/></svg>
+          Message on Slack ↗
+        </div>
+      </div>
+    </a>`;
+  }
+}
+
+function getQuestions() {
+  const isGov = answers.sector === 'gov';
+  const isBoth = answers.sector === 'both';
+  const govContext = isGov || isBoth;
+
+  return [
+    {
+      id:"sector", text:"What sector is the client in?",
+      opts:[
+        {id:"gov", icon:"🏛️", title:"Government / Public sector", sub:"National security, defence, law enforcement, intelligence agencies"},
+        {id:"corp", icon:"🏢", title:"Corporate / Private sector", sub:"Enterprise, financial services, brands, healthcare, tech"},
+        {id:"both", icon:"🤝", title:"Both / Mixed", sub:"Spanning public and private sector interests"}
+      ]
+    },
+    govContext ? {
+      id:"threat_type", text:"What are the client's threat concerns?", multiselect: true,
+      opts:[
+        {id:"social_disinfo", icon:"📱", title:"Social media threats & influence ops", sub:"Foreign-state actors, coordinated inauthentic behaviour, propaganda campaigns"},
+        {id:"cyber_tech", icon:"🔒", title:"Technical cyber threats", sub:"Dark web, attack surface, vulnerabilities, nation-state intrusions"},
+        {id:"narrative", icon:"💬", title:"Narrative manipulation & PSYOPS", sub:"Information warfare, psychological operations, public opinion manipulation"},
+        {id:"osint_intel", icon:"🌐", title:"OSINT / Intelligence gathering", sub:"Deep intelligence, geolocation, actor mapping for security operations"},
+        {id:"not_sure", icon:"❓", title:"Not sure / Combination", sub:"Multiple threat types or still exploring with the agency"}
+      ]
+    } : {
+      id:"threat_type", text:"What are the client's threat concerns?", multiselect: true,
+      opts:[
+        {id:"social_disinfo", icon:"📱", title:"Social media threats & disinformation", sub:"Fake accounts, bot campaigns, narrative attacks on social platforms"},
+        {id:"cyber_tech", icon:"🔒", title:"Technical cyber threats", sub:"Dark web, attack surface, vulnerabilities, data breaches, ransomware"},
+        {id:"narrative", icon:"💬", title:"Narrative & reputational risk", sub:"Coordinated information operations, brand narrative, influence campaigns"},
+        {id:"osint_intel", icon:"🌐", title:"OSINT / Intelligence gathering", sub:"Deep intelligence, geolocation, actor mapping for security operations"},
+        {id:"not_sure", icon:"❓", title:"Not sure / Combination", sub:"Multiple threat types or still exploring with the client"}
+      ]
+    },
+    govContext ? {
+      id:"urgency", text:"What are the client's mission priorities?", multiselect: true,
+      opts:[
+        {id:"brand", icon:"🏛️", title:"Public trust & civic safety", sub:"Protecting public institutions, countering harmful online content, civil order"},
+        {id:"crisis", icon:"⚡", title:"Crisis & incident response", sub:"Real-time threat monitoring, emerging incident detection, rapid response"},
+        {id:"security_ops", icon:"🖥️", title:"Intelligence & security operations", sub:"SIGINT, OSINT integration, threat actor tracking, security agency workflows"},
+        {id:"election_gov", icon:"🗳️", title:"Election integrity & national security", sub:"Foreign interference, election influence ops, extremism, radicalisation monitoring"},
+        {id:"market_financial", icon:"🏦", title:"Critical infrastructure & economic security", sub:"Protection of financial systems, critical national infrastructure, strategic assets"}
+      ]
+    } : {
+      id:"urgency", text:"What are the client's use case drivers?", multiselect: true,
+      opts:[
+        {id:"brand", icon:"🛡️", title:"Brand protection & reputation", sub:"Protect brand from fake attacks, impersonation, hostile actors"},
+        {id:"crisis", icon:"⚡", title:"Crisis detection & response", sub:"Real-time alerts, emerging threats, rapid response capability"},
+        {id:"security_ops", icon:"🖥️", title:"Security operations (SOC/CISO)", sub:"Integrate with SIEM/SOAR, threat feeds, credential monitoring"},
+        {id:"election_gov", icon:"🗳️", title:"Elections / national security", sub:"Foreign influence ops, election integrity, extremism monitoring"},
+        {id:"market_financial", icon:"📈", title:"Market / financial integrity", sub:"Market manipulation detection, investor narrative risk, listed company protection"}
+      ]
+    },
+    govContext ? {
+      id:"mw_context", text:"How does this engagement fit with Meltwater?",
+      opts:[
+        {id:"addon", icon:"🔌", title:"Extending existing Meltwater", sub:"Agency already uses Meltwater — adding cyber intelligence capability"},
+        {id:"strategic", icon:"🎯", title:"Sovereign / standalone mandate", sub:"Dedicated government security programme, independent of commercial Meltwater"},
+        {id:"both_mw", icon:"🔗", title:"New joint pursuit", sub:"Bringing Meltwater + partner together for a new agency engagement"}
+      ]
+    } : {
+      id:"mw_context", text:"How does this relate to the existing Meltwater deal?",
+      opts:[
+        {id:"addon", icon:"🔌", title:"Add-on to existing Meltwater", sub:"Client already has Meltwater — looking to extend capability"},
+        {id:"strategic", icon:"🎯", title:"Strategic / standalone initiative", sub:"New budget, standalone mandate, cyber-first requirement"},
+        {id:"both_mw", icon:"🔗", title:"Joint pitch / new logo", sub:"Bringing Meltwater + partner together from the start"}
+      ]
+    }
+  ];
+}
+
+let answers = {}, current = 0, selected = null;
+
+function isMulti() { return !!getQuestions()[current].multiselect; }
+
+function renderQuestion() {
+  const QUESTIONS = getQuestions();
+  const q = QUESTIONS[current];
+  const pips = document.getElementById('progress');
+  pips.innerHTML = QUESTIONS.map((_,i) => `<div class="pip ${i<current?'done':i===current?'active':''}"></div>`).join('');
+  document.getElementById('step-label').textContent = `Question ${current+1} of ${QUESTIONS.length}`;
+  document.getElementById('question-text').textContent = q.text;
+
+  // For multi-select, selected is an array; for single, a string
+  if (q.multiselect) {
+    selected = answers[q.id] || [];
+  } else {
+    selected = answers[q.id] || null;
+  }
+
+  const hint = q.multiselect ? '<span style="font-size:12px;color:var(--text-muted);display:block;margin-bottom:1rem">✦ Select all that apply</span>' : '';
+  document.getElementById('opts-list').innerHTML = hint + q.opts.map(o => {
+    const isSelected = q.multiselect ? (selected||[]).includes(o.id) : selected===o.id;
+    return `<div class="opt ${isSelected?'selected':''}" onclick="selectOpt('${o.id}',this)">
+      <span class="opt-icon">${o.icon}</span>
+      <div class="opt-body">
+        <div class="opt-title">${o.title}</div>
+        <div class="opt-sub">${o.sub}</div>
+      </div>
+      ${q.multiselect ? `<span class="opt-check" style="flex-shrink:0;width:20px;height:20px;border-radius:4px;border:1.5px solid var(--border-med);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s;background:${isSelected?'var(--purple)':'transparent'};border-color:${isSelected?'var(--purple)':'var(--border-med)'};">${isSelected?'✓':''}</span>` : ''}
+    </div>`;
+  }).join('');
+
+  document.getElementById('btn-back').disabled = current===0;
+  const hasSelection = q.multiselect ? (selected||[]).length > 0 : !!selected;
+  document.getElementById('btn-next').disabled = !hasSelection;
+  document.getElementById('nav-hint').textContent = hasSelection ? '' : 'Select an option to continue';
+}
+
+function selectOpt(id, el) {
+  const q = getQuestions()[current];
+  if (q.multiselect) {
+    if (!Array.isArray(selected)) selected = [];
+    const idx = selected.indexOf(id);
+    if (idx > -1) { selected.splice(idx, 1); }
+    else { selected.push(id); }
+    answers[q.id] = [...selected];
+    renderQuestion();
+  } else {
+    selected = id;
+    answers[q.id] = id;
+    // If sector changes, clear downstream answers so context-aware questions reset
+    if (q.id === 'sector') {
+      delete answers.threat_type;
+      delete answers.urgency;
+      delete answers.mw_context;
+    }
+    document.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('btn-next').disabled = false;
+    document.getElementById('nav-hint').textContent = '';
+  }
+}
+
+function goNext() {
+  const QUESTIONS = getQuestions();
+  const hasSelection = isMulti() ? (selected||[]).length > 0 : !!selected;
+  if (!hasSelection) return;
+  if (current < QUESTIONS.length-1) { current++; renderQuestion(); }
+  else showResult();
+}
+
+function goBack() {
+  if (current > 0) { current--; renderQuestion(); }
+}
+
+function scorePartners() {
+  const s = answers, sc = {cyabra:0,blackbird:0,cyfirma:0,cognyte:0,cyberglobes:0};
+  if (s.sector==='gov') { sc.cyberglobes+=4; sc.cyabra+=3; sc.blackbird+=2; sc.cognyte+=2; }
+  if (s.sector==='corp') { sc.cyfirma+=3; sc.blackbird+=3; sc.cyabra+=2; sc.cognyte+=3; }
+  if (s.sector==='both') { sc.blackbird+=2; sc.cyabra+=2; sc.cognyte+=2; sc.cyfirma+=1; }
+
+  // threat_type is now an array
+  const threats = Array.isArray(s.threat_type) ? s.threat_type : (s.threat_type ? [s.threat_type] : []);
+  if (threats.includes('social_disinfo')) { sc.cyabra+=5; sc.blackbird+=3; }
+  if (threats.includes('cyber_tech')) { sc.cyfirma+=5; sc.cognyte+=4; }
+  if (threats.includes('narrative')) { sc.blackbird+=6; sc.cyabra+=2; }
+  if (threats.includes('osint_intel')) { sc.cyberglobes+=6; sc.cyabra+=2; }
+  if (threats.includes('not_sure')) { sc.blackbird+=2; sc.cyfirma+=2; sc.cyabra+=2; sc.cognyte+=1; }
+
+  const urgencies = Array.isArray(s.urgency) ? s.urgency : (s.urgency ? [s.urgency] : []);
+  if (urgencies.includes('brand')) { sc.cyabra+=4; sc.blackbird+=3; sc.cyfirma+=1; }
+  if (urgencies.includes('crisis')) { sc.cyabra+=3; sc.blackbird+=4; sc.cognyte+=2; }
+  if (urgencies.includes('security_ops')) { sc.cyfirma+=5; sc.cognyte+=5; }
+  if (urgencies.includes('election_gov')) { sc.cyabra+=4; sc.cyberglobes+=4; sc.blackbird+=2; }
+  if (urgencies.includes('market_financial')) { sc.blackbird+=5; sc.cyfirma+=2; sc.cognyte+=2; }
+  if (s.mw_context==='addon') { sc.cyabra+=2; sc.blackbird+=2; }
+  if (s.mw_context==='strategic') { sc.cyfirma+=2; sc.cognyte+=2; sc.cyberglobes+=1; }
+  if (s.mw_context==='both_mw') { sc.blackbird+=2; sc.cyfirma+=1; sc.cyabra+=1; }
+  return sc;
+}
+
+function getReason(pid) {
+  const s = answers;
+  const threats = Array.isArray(s.threat_type) ? s.threat_type : (s.threat_type ? [s.threat_type] : []);
+  const urgencies = Array.isArray(s.urgency) ? s.urgency : (s.urgency ? [s.urgency] : []);
+  const all = {
+    cyabra:[
+      threats.includes('social_disinfo')?"Client's primary concern is social media threats — Cyabra authenticates every account and conversation Meltwater surfaces":null,
+      urgencies.includes('brand')?"Brand protection is a core Cyabra strength — detects fake campaigns, bots, and narrative manipulation in real time":null,
+      s.sector==='gov'?"Strong government track record — proven in national security engagements including intelligence agencies across APAC":null,
+      urgencies.includes('election_gov')?"Election integrity and foreign influence operation detection are core Cyabra use cases":null,
+      s.mw_context==='addon'?"Ideal add-on to existing Meltwater — minimal procurement friction, contracted on Meltwater paper":null,
+    ],
+    blackbird:[
+      threats.includes('narrative')?"Blackbird.AI is the Gartner-recognised category leader for narrative/disinformation intelligence":null,
+      urgencies.includes('market_financial')?"Market manipulation detection and listed company narrative protection are core capabilities":null,
+      urgencies.includes('crisis')?"Real-time narrative risk scoring enables faster, smarter crisis response for comms and security teams":null,
+      s.sector==='gov'?"Strong defence & national security use cases — information operations and geopolitical narrative intelligence":null,
+    ],
+    cyfirma:[
+      threats.includes('cyber_tech')?"CYFIRMA delivers the 'hacker's view' — predictive outside-in intelligence covering dark web, attack surface and vulnerabilities":null,
+      urgencies.includes('security_ops')?"DeCYFIR integrates with SIEM/SOAR tools — built for security operations teams and CISOs":null,
+      s.sector==='corp'?"Strong enterprise track record — Fortune 500 clients, Goldman Sachs-backed, headquartered in Singapore":null,
+    ],
+    cognyte:[
+      urgencies.includes('security_ops')?"Cognyte LUMINAR is an all-in-one platform with 5-min deployment — ideal for CISO/SOC teams needing comprehensive external threat coverage":null,
+      threats.includes('cyber_tech')?"Covers the full spectrum: EASM, DRP, compromised credentials, threat actor analysis with a dedicated human concierge analyst":null,
+      s.mw_context==='strategic'?"Standalone mandate suits Cognyte's comprehensive platform approach with designated intelligence analyst":null,
+    ],
+    cyberglobes:[
+      threats.includes('osint_intel')?"Cyberglobes specialises in deep OSINT — geolocation, actor mapping and intelligence gathering for security operations":null,
+      s.sector==='gov'?"Built for government & defence — proven in national security engagements including Japan Ministry of Defence":null,
+      urgencies.includes('election_gov')?"National security OSINT depth complements social threat intelligence for comprehensive government coverage":null,
+    ]
+  };
+  return (all[pid]||[]).filter(Boolean).slice(0,3);
+}
+
+// Positioning notes for multi-partner output
+const POSITIONING = {
+  cyabra_blackbird: "Position together as the social authenticity + narrative intelligence stack — Cyabra identifies who is fake, Blackbird.AI reveals the story they're pushing.",
+  cyabra_cyfirma: "Cyabra monitors the social threat surface while CYFIRMA monitors the technical threat surface — a comprehensive outside-in view for clients facing both.",
+  cyabra_cognyte: "Cyabra adds social threat intelligence on top of Cognyte's broad external threat platform — a strong combined story for enterprise clients.",
+  cyabra_cyberglobes: "A proven combination for government/national security — Cyabra covers social threat intelligence, Cyberglobes provides deep OSINT and geolocation depth.",
+  blackbird_cyfirma: "Blackbird.AI covers the narrative/reputational threat layer while CYFIRMA covers the technical cyber layer — complementary and non-overlapping.",
+  blackbird_cognyte: "Both are comprehensive platforms that work at different layers — Blackbird.AI on narrative risk, Cognyte on technical external threats. Position as a full-spectrum solution for enterprise.",
+  blackbird_cyberglobes: "For government clients: Blackbird.AI provides narrative intelligence and information operations analysis, Cyberglobes provides deep OSINT — a powerful combination.",
+  cyfirma_cognyte: "CYFIRMA and Cognyte have overlapping capabilities — lead with one based on the client's preference for predictive intelligence (CYFIRMA) vs. all-in-one platform with human analyst (Cognyte).",
+  cyfirma_cyberglobes: "CYFIRMA covers the technical cyber threat landscape, Cyberglobes covers deep open-source intelligence — strong for government clients with dual mandates.",
+  cognyte_cyberglobes: "Cognyte provides the automated threat intelligence platform, Cyberglobes adds deep OSINT investigation capability — suited to government/defence SOC environments.",
+};
+
+function getPositioningNote(ids) {
+  if (ids.length < 2) return null;
+  const key = ids.slice(0,2).sort().join('_');
+  return POSITIONING[key] || null;
+}
+
+function buildPartnerResultCard(pid, rank) {
+  const p = PARTNERS[pid];
+  const reasons = getReason(pid);
+  const rankLabel = rank === 1 ? '✓ Primary recommendation' : '✓ Also recommended';
+  const rankBg = rank === 1 ? `background:linear-gradient(135deg,#2d2a6e,#534AB7)` : `background:linear-gradient(135deg,${p.color}cc,${p.color})`;
+  return `
+    <div style="border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;margin-bottom:1.25rem;">
+      <div style="${rankBg};padding:1.5rem 2rem;color:#fff;">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);border-radius:20px;padding:4px 14px;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;">${rankLabel}</div>
+        ${p.logo ? `<div style="margin-bottom:12px"><img src="${p.logo}" alt="${p.name}" style="height:38px;width:auto;max-width:160px;object-fit:contain;display:block;background:rgba(255,255,255,0.92);border-radius:8px;padding:6px 10px;"></div>` : ''}
+        <div style="font-size:22px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em;">${p.name}</div>
+        <div style="font-size:13px;opacity:0.85;line-height:1.5;">${p.tagline}</div>
+      </div>
+      <div style="padding:1.25rem 1.5rem;">
+        ${reasons.length ? `
+        <div class="section-title" style="margin-bottom:10px">Why this partner fits</div>
+        <div class="reasons" style="margin-bottom:1.25rem">${reasons.map(r=>`<div class="reason"><span class="reason-check">✓</span><span>${r}</span></div>`).join('')}</div>` : ''}
+        <div class="section-title" style="margin-bottom:10px">How to position</div>
+        <div class="reasons" style="margin-bottom:1.25rem"><div class="reason"><span class="reason-check">💡</span><span>${p.mw_fit}</span></div></div>
+        <div class="section-title" style="margin-bottom:10px">Who to engage</div>
+        <div class="contact-block" style="margin-bottom:1.25rem"><div class="contact-cards">${buildContactHTML(p.contacts, true)}</div></div>
+        ${p.collateral ? `
+        <div class="section-title" style="margin-bottom:10px">Latest collateral</div>
+        <div style="margin-bottom:1.25rem"><a class="collateral-link" href="${p.collateral.url}" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          ${p.collateral.label}</a></div>` : ''}
+        ${p.products ? `
+        <div class="section-title" style="margin-bottom:10px">Products & pricing <span style="font-size:11px;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400">(internal only)</span></div>
+        <div class="product-cards" style="margin-bottom:0.5rem">
+          ${p.products.map(prod=>`
+            <div class="product-card">
+              <div class="product-card-header"><div class="product-card-name">${prod.name}</div><span class="product-badge" style="background:${prod.badgeBg};color:${prod.badgeColor}">${prod.badge}</span></div>
+              <div class="product-card-body">
+                <div class="product-desc">${prod.desc}</div>
+                <table class="pricing-table">${prod.pricing.map(row=>`<tr class="${row.label.toLowerCase().includes('margin')?'margin-row':''}"><td>${row.label}</td><td>${row.value}</td></tr>`).join('')}</table>
+                <div class="product-note">💡 ${prod.note}</div>
+                <a class="product-slide-link" href="${prod.slideUrl}" target="_blank">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  ${prod.slideLabel}</a>
+              </div>
+            </div>`).join('')}
+        </div>` : ''}
+      </div>
+    </div>`;
+}
+
+function showResult() {
+  document.getElementById('quiz-screen').style.display='none';
+  const scores = scorePartners();
+  const THRESHOLD = 0.65; // show partners scoring >= 65% of top score
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const topScore = sorted[0][1];
+
+  // Determine recommended partners — always at least 1, up to 3 if scores are close
+  const recommended = sorted
+    .filter(([id, score]) => score >= topScore * THRESHOLD && score > 0)
+    .slice(0, 3)
+    .map(([id]) => id);
+
+  const rs = document.getElementById('result-screen');
+  rs.style.display = 'block';
+
+  const positioningNote = recommended.length > 1 ? getPositioningNote(recommended) : null;
+  const multiHeader = recommended.length > 1
+    ? `<div style="background:var(--purple-light);border:1px solid var(--purple-mid);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;">
+        <div style="font-size:13px;font-weight:600;color:var(--purple);margin-bottom:6px;">🎯 Multiple partners recommended</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;">Based on the client's combined threat concerns, <strong>${recommended.map(id=>PARTNERS[id].name).join(' + ')}</strong> can be positioned together.</div>
+        ${positioningNote ? `<div style="margin-top:8px;font-size:13px;color:var(--text-secondary);line-height:1.5;border-top:1px solid var(--purple-mid);padding-top:8px;">💡 ${positioningNote}</div>` : ''}
+      </div>` : '';
+
+  const otherIds = sorted.slice(recommended.length, recommended.length+2).map(([id])=>id).filter(id => scores[id] > 0);
+
+  rs.innerHTML = `
+    ${multiHeader}
+    ${recommended.map((pid, i) => buildPartnerResultCard(pid, i+1)).join('')}
+    ${otherIds.length ? `
+    <div class="section-title" style="margin-bottom:12px">Others worth exploring</div>
+    <div class="also-grid" style="margin-bottom:1.5rem">
+      ${otherIds.map(id=>`<div class="also-card">
+        <div class="also-name" style="color:${PARTNERS[id].color}">${PARTNERS[id].name}</div>
+        <div class="also-note">${PARTNERS[id].tagline.split('—')[0].trim()}</div>
+        <div style="margin-top:8px"><a href="${PARTNERS[id].url}" target="_blank" style="font-size:12px;color:${PARTNERS[id].color}">${PARTNERS[id].url} ↗</a></div>
+      </div>`).join('')}
+    </div>` : ''}
+    <div class="section-title" style="margin-bottom:10px">All partner websites</div>
+    <div class="ref-grid" style="margin-bottom:1.5rem">
+      ${Object.entries(PARTNERS).map(([id,p])=>`<a class="ref-link" href="${p.url}" target="_blank" style="color:${p.color}">${p.name} ↗</a>`).join('')}
+    </div>
+    <div class="result-actions">
+      <button class="btn" onclick="restart()">← Start over</button>
+      <button class="btn primary" onclick="switchTab('overview');showPartner('${recommended[0]}')">View partner profiles →</button>
+    </div>`;
+}
+
+function restart() {
+  answers={}; current=0; selected=null;
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz-screen').style.display='block';
+  renderQuestion();
+}
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+t).classList.add('active');
+  const tabs = document.querySelectorAll('.tab');
+  if (t==='quiz') tabs[0].classList.add('active');
+  if (t==='overview') tabs[1].classList.add('active');
+  if (t==='flowchart') tabs[2].classList.add('active');
+}
+
+function buildOverview() {
+  const chips = document.getElementById('chips');
+  chips.innerHTML = Object.entries(PARTNERS).map(([id,p])=>
+    `<button class="chip" id="chip-${id}" onclick="showPartner('${id}')">
+      ${p.logo ? `<img src="${p.logo}" alt="" style="height:18px;width:auto;max-width:60px;object-fit:contain;vertical-align:middle;margin-right:4px;opacity:0.85;">` : ''}${p.name}
+    </button>`
+  ).join('');
+  const container = document.getElementById('partner-cards');
+  container.innerHTML = Object.entries(PARTNERS).map(([id,p])=>`
+    <div class="partner-card" id="pc-${id}">
+      <div class="pc-header">
+        <div class="pc-dot" style="background:${p.color}"></div>
+        <div style="flex:1">
+          ${p.logo ? `<img src="${p.logo}" alt="${p.name}" style="height:36px;width:auto;max-width:140px;object-fit:contain;margin-bottom:6px;display:block;">` : ''}
+          <div class="pc-name">${p.name}</div>
+          <div class="pc-tagline">${p.tagline}</div>
+        </div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-tags">${p.tags.map(t=>`<span class="pc-tag" style="background:${t.bg};color:${t.color}">${t.label}</span>`).join('')}</div>
+        <div class="pc-section-title">Use cases</div>
+        <div class="uc-grid">${p.usecases.map(u=>`<div class="uc-item"><div class="uc-title">${u.title}</div><div class="uc-desc">${u.desc}</div></div>`).join('')}</div>
+        <div class="pc-section-title">Sales trigger signals</div>
+        <div class="pc-signals">${p.signals.map(s=>`<div class="signal"><span>${s}</span></div>`).join('')}</div>
+        <div class="pc-section-title" style="margin-top:1rem">Meltwater positioning</div>
+        <div class="pc-signals"><div class="signal"><span>💡 ${p.mw_fit}</span></div></div>
+        ${p.collateral ? `
+        <div class="pc-section-title" style="margin-top:1rem">Latest collateral</div>
+        <div style="margin-bottom:1rem">
+          <a class="collateral-link" href="${p.collateral.url}" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            ${p.collateral.label}
+          </a>
+        </div>` : ''}
+        ${p.products ? `
+        <div class="pc-section-title" style="margin-top:1rem">Products & pricing <span style="font-size:11px;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:400">(internal — do not share)</span></div>
+        <div class="product-cards">
+          ${p.products.map(prod => `
+            <div class="product-card">
+              <div class="product-card-header">
+                <div class="product-card-name">${prod.name}</div>
+                <span class="product-badge" style="background:${prod.badgeBg};color:${prod.badgeColor}">${prod.badge}</span>
+              </div>
+              <div class="product-card-body">
+                <div class="product-desc">${prod.desc}</div>
+                <table class="pricing-table">
+                  ${prod.pricing.map(row => `<tr class="${row.label.toLowerCase().includes('margin') ? 'margin-row' : ''}"><td>${row.label}</td><td>${row.value}</td></tr>`).join('')}
+                </table>
+                <div class="product-note">💡 ${prod.note}</div>
+                <a class="product-slide-link" href="${prod.slideUrl}" target="_blank">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  ${prod.slideLabel}
+                </a>
+              </div>
+            </div>`).join('')}
+        </div>` : ''}
+        ${p.products ? `
+        <div class="pc-section-title" style="margin-top:1.25rem">Products & pricing <span style="font-size:10px;color:var(--text-muted);text-transform:none;letter-spacing:0">(internal — do not share with clients)</span></div>
+        <div class="product-cards">
+          ${p.products.map(prod => `
+            <div class="product-card">
+              <div class="product-card-header">
+                <div class="product-card-name">${prod.name}</div>
+                <span class="product-badge" style="background:${prod.badgeBg};color:${prod.badgeColor}">${prod.badge}</span>
+              </div>
+              <div class="product-card-body">
+                <div class="product-desc">${prod.desc}</div>
+                <table class="pricing-table">
+                  ${prod.pricing.map((row,i) => `<tr class="${row.label.toLowerCase().includes('margin') ? 'margin-row' : ''}"><td>${row.label}</td><td>${row.value}</td></tr>`).join('')}
+                </table>
+                <div class="product-note">💡 ${prod.note}</div>
+                <a class="product-slide-link" href="${prod.slideUrl}" target="_blank">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  ${prod.slideLabel}
+                </a>
+              </div>
+            </div>`).join('')}
+        </div>` : ''}
+      </div>
+      <div class="pc-footer">
+        <a href="${p.url}" target="_blank" class="pc-url">${p.url} ↗</a>
+        <button class="btn primary" onclick="switchTab('quiz')">Run questionnaire →</button>
+      </div>
+      <div style="padding:0 2rem 1.5rem">
+        <div class="pc-section-title" style="margin-bottom:8px">Who to engage</div>
+        <div class="contact-cards">
+          ${buildContactHTML(p.contacts, true)}
+        </div>
+      </div>
+    </div>`).join('');
+  showPartner('cyabra');
+}
+
+function showPartner(id) {
+  document.querySelectorAll('.partner-card').forEach(c=>c.classList.remove('shown'));
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById('pc-'+id).classList.add('shown');
+  document.getElementById('chip-'+id).classList.add('active');
+}
+
+renderQuestion();
+buildOverview();
+</script>
+</body>
+</html>
