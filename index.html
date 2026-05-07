@@ -558,7 +558,7 @@ const PARTNERS = {
       {label:"Disinformation", bg:"#FFEBE0", color:"#7a2810"},
       {label:"Bot detection", bg:"#FFF5ED", color:"#994020"},
       {label:"Brand protection", bg:"#FFEDE0", color:"#7B3810"},
-      {label:"Crisis management", bg:"#FFF2E8", color:"#8a3a10"}
+      {label:"Takedown services", bg:"#FFE5D5", color:"#7a2810"}
     ],
     usecases: [
       {title:"Fake account & bot detection", desc:"Identifies inauthentic profiles and coordinated bot networks across social platforms"},
@@ -566,9 +566,10 @@ const PARTNERS = {
       {title:"Brand protection", desc:"Detects fake accounts, impersonations, and synthetic narratives targeting your brand"},
       {title:"Crisis management", desc:"Real-time monitoring with alerts — distinguish genuine noise from coordinated attacks"},
       {title:"Deepfake detection", desc:"Identifies synthetic media and impersonation campaigns"},
+      {title:"Account takedowns", desc:"Evidence-based mitigation reports mapped to platform policy violations — used to formally request removal of fake accounts and harmful content"},
       {title:"Consumer insights", desc:"Authenticates consumer conversations — separates real voices from manufactured sentiment"},
     ],
-    signals: ["🔥 Client reacting to brand attacks or sudden viral negative content","🏛️ Government/public sector with election integrity or national security mandate","📊 Unexplained social volume spikes — Cyabra reveals if coordinated or genuine","🎯 Suspected fake reviews, influencer manipulation, or disinformation campaign"],
+    signals: ["🔥 Client reacting to brand attacks or sudden viral negative content","🏛️ Government/public sector with election integrity or national security mandate","📊 Unexplained social volume spikes — Cyabra reveals if coordinated or genuine","🎯 Suspected fake reviews, influencer manipulation, or disinformation campaign","🗑️ Client needs to remove fake accounts or harmful content from social platforms"],
     url: "https://cyabra.com/",
     collateral: { label: "Cyabra partner deck ↗", url: "https://docs.google.com/presentation/d/1ig3K7JHfeKsTim83GjWylcqB78WQ5mS48zpXJtKFR-Y/edit?usp=sharing" },
     contacts: ["dean"],
@@ -668,17 +669,18 @@ const PARTNERS = {
       {label:"Human concierge", bg:"#E0EBF8", color:"#0b3464"},
       {label:"EASM", bg:"#E8F2FC", color:"#0d3c70"},
       {label:"DRP", bg:"#E3EEF9", color:"#0c3868"},
-      {label:"SIEM/SOAR", bg:"#E6F0FA", color:"#0d3a6c"}
+      {label:"Takedown services", bg:"#DCE9F7", color:"#0a3260"}
     ],
     usecases: [
       {title:"Attack surface management", desc:"External asset discovery, inventory, and vulnerability prioritisation across your digital perimeter"},
       {title:"Threat actor analysis", desc:"Deep profiling of TTPs, IOCs, and priority intelligence requirements with built-in risk scoring"},
       {title:"Compromised credentials", desc:"Monitors dark and deep web for stolen credentials, account takeover risk, and fraud signals"},
       {title:"Phishing intelligence", desc:"Proactive detection of phishing infrastructure targeting your brand and customers"},
+      {title:"Remediation & takedowns", desc:"Intelligence Concierge team coordinates takedowns and negotiates with threat actors — 95%+ takedown success rate. VIP protection includes removal from data brokers"},
       {title:"Intelligence concierge", desc:"A designated human analyst who shapes your security strategy — not just answers alerts"},
       {title:"SIEM/SOAR integration", desc:"Seamless integration into existing security workflows — 5-minute deployment, 95%+ takedown success"},
     ],
-    signals: ["🏢 Large enterprise or MSSP needing comprehensive external threat coverage","🧑‍💻 Security team wants a designated analyst, not just a tool","🔗 Requirement to integrate with SIEM, SOAR or TIP platforms","📊 Need for automated dashboards, reports and risk-scored alerts"],
+    signals: ["🏢 Large enterprise or MSSP needing comprehensive external threat coverage","🧑‍💻 Security team wants a designated analyst, not just a tool","🔗 Requirement to integrate with SIEM, SOAR or TIP platforms","📊 Need for automated dashboards, reports and risk-scored alerts","🗑️ Client needs active threat remediation and takedown support, not just monitoring"],
     url: "https://www.cognyte.com/",
     collateral: { label: "Cognyte partner deck ↗", url: "https://drive.google.com/file/d/1oVYS38vB2okAPIfkannU-ohUF2d7s3Xw/view?usp=sharing" },
     contacts: ["dean"],
@@ -805,7 +807,8 @@ function getQuestions() {
         {id:"crisis", icon:"⚡", title:"Crisis & incident response", sub:"Real-time threat monitoring, emerging incident detection, rapid response"},
         {id:"security_ops", icon:"🖥️", title:"Intelligence & security operations", sub:"SIGINT, OSINT integration, threat actor tracking, security agency workflows"},
         {id:"election_gov", icon:"🗳️", title:"Election integrity & national security", sub:"Foreign interference, election influence ops, extremism, radicalisation monitoring"},
-        {id:"market_financial", icon:"🏦", title:"Critical infrastructure & economic security", sub:"Protection of financial systems, critical national infrastructure, strategic assets"}
+        {id:"market_financial", icon:"🏦", title:"Critical infrastructure & economic security", sub:"Protection of financial systems, critical national infrastructure, strategic assets"},
+        {id:"takedown", icon:"🗑️", title:"Content & account takedowns", sub:"Removal of fake accounts, harmful content, state-sponsored disinformation or impersonations"}
       ]
     } : {
       id:"urgency", text:"What are the client's use case drivers?", multiselect: true,
@@ -814,7 +817,8 @@ function getQuestions() {
         {id:"crisis", icon:"⚡", title:"Crisis detection & response", sub:"Real-time alerts, emerging threats, rapid response capability"},
         {id:"security_ops", icon:"🖥️", title:"Security operations (SOC/CISO)", sub:"Integrate with SIEM/SOAR, threat feeds, credential monitoring"},
         {id:"election_gov", icon:"🗳️", title:"Elections / national security", sub:"Foreign influence ops, election integrity, extremism monitoring"},
-        {id:"market_financial", icon:"📈", title:"Market / financial integrity", sub:"Market manipulation detection, investor narrative risk, listed company protection"}
+        {id:"market_financial", icon:"📈", title:"Market / financial integrity", sub:"Market manipulation detection, investor narrative risk, listed company protection"},
+        {id:"takedown", icon:"🗑️", title:"Content & account takedowns", sub:"Removal of fake accounts, harmful content, phishing sites or impersonations"}
       ]
     },
     govContext ? {
@@ -930,6 +934,7 @@ function scorePartners() {
   if (urgencies.includes('security_ops')) { sc.cyfirma+=5; sc.cognyte+=5; }
   if (urgencies.includes('election_gov')) { sc.cyabra+=4; sc.cyberglobes+=4; sc.blackbird+=2; }
   if (urgencies.includes('market_financial')) { sc.blackbird+=5; sc.cyfirma+=2; sc.cognyte+=2; }
+  if (urgencies.includes('takedown')) { sc.cyabra+=5; sc.cognyte+=4; }
   if (s.mw_context==='addon') { sc.cyabra+=2; sc.blackbird+=2; }
   if (s.mw_context==='strategic') { sc.cyfirma+=2; sc.cognyte+=2; sc.cyberglobes+=1; }
   if (s.mw_context==='both_mw') { sc.blackbird+=2; sc.cyfirma+=1; sc.cyabra+=1; }
@@ -944,6 +949,7 @@ function getReason(pid) {
     cyabra:[
       threats.includes('social_disinfo')?"Client's primary concern is social media threats — Cyabra authenticates every account and conversation Meltwater surfaces":null,
       urgencies.includes('brand')?"Brand protection is a core Cyabra strength — detects fake campaigns, bots, and narrative manipulation in real time":null,
+      urgencies.includes('takedown')?"Cyabra produces evidence-based mitigation reports mapped to platform policies to formally request removal of fake accounts and content":null,
       s.sector==='gov'?"Strong government track record — proven in national security engagements including intelligence agencies across APAC":null,
       urgencies.includes('election_gov')?"Election integrity and foreign influence operation detection are core Cyabra use cases":null,
       s.mw_context==='addon'?"Ideal add-on to existing Meltwater — minimal procurement friction, contracted on Meltwater paper":null,
@@ -961,6 +967,7 @@ function getReason(pid) {
     ],
     cognyte:[
       urgencies.includes('security_ops')?"Cognyte LUMINAR is an all-in-one platform with 5-min deployment — ideal for CISO/SOC teams needing comprehensive external threat coverage":null,
+      urgencies.includes('takedown')?"Cognyte's Intelligence Concierge team actively coordinates takedowns and negotiates with threat actors — 95%+ takedown success rate":null,
       threats.includes('cyber_tech')?"Covers the full spectrum: EASM, DRP, compromised credentials, threat actor analysis with a dedicated human concierge analyst":null,
       s.mw_context==='strategic'?"Standalone mandate suits Cognyte's comprehensive platform approach with designated intelligence analyst":null,
     ],
@@ -977,7 +984,7 @@ function getReason(pid) {
 const POSITIONING = {
   cyabra_blackbird: "Position together as the social authenticity + narrative intelligence stack — Cyabra identifies who is fake, Blackbird.AI reveals the story they're pushing.",
   cyabra_cyfirma: "Cyabra monitors the social threat surface while CYFIRMA monitors the technical threat surface — a comprehensive outside-in view for clients facing both.",
-  cyabra_cognyte: "Cyabra adds social threat intelligence on top of Cognyte's broad external threat platform — a strong combined story for enterprise clients.",
+  cyabra_cognyte: "Cyabra adds social threat intelligence on top of Cognyte's broad external threat platform — a strong combined story for enterprise clients. Both offer takedown services: Cyabra for social platforms, Cognyte for broader threat actor remediation.",
   cyabra_cyberglobes: "A proven combination for government/national security — Cyabra covers social threat intelligence, Cyberglobes provides deep OSINT and geolocation depth.",
   blackbird_cyfirma: "Blackbird.AI covers the narrative/reputational threat layer while CYFIRMA covers the technical cyber layer — complementary and non-overlapping.",
   blackbird_cognyte: "Both are comprehensive platforms that work at different layers — Blackbird.AI on narrative risk, Cognyte on technical external threats. Position as a full-spectrum solution for enterprise.",
